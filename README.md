@@ -219,7 +219,7 @@ system configuration save
 ./install_adguardhome.sh uninstall
 ```
 
-<p align="center">
+<p align="left">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="https://github.com/Corvus-Malus/XKeen-docs/raw/main/images/AdGuardHome/Dark/unistall.png">
       <img src="https://github.com/Corvus-Malus/XKeen-docs/raw/main/images/AdGuardHome/Light/unistall.png">
