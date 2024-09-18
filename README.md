@@ -119,7 +119,7 @@ system configuration save
 <p align="center">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="https://github.com/Corvus-Malus/XKeen-docs/raw/main/images/AdGuardHome/Dark/Step-3.png">
-      <img src="https://github.com/Corvus-Malus/XKeen-docs/raw/main/images/AdGuardHome/Light/step-3.jpg">
+      <img src="https://github.com/Corvus-Malus/XKeen-docs/raw/main/images/AdGuardHome/Light/step-3.png">
     </picture>
 </p>
 
