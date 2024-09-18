@@ -196,7 +196,7 @@ system configuration save
 
 <br>
 
-Получение доступа к ИИ-сервисам (ChatGPT, Microsoft Copilot, Google Gemini) из России
+**Получение доступа к ИИ-сервисам (ChatGPT, Microsoft Copilot, Google Gemini) из России**
 
 <p align="center">
     <picture>
