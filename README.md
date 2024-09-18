@@ -10,7 +10,7 @@
 2. Выполните команду:
 
 ```bash
-curl -L -o install_adguardhome.sh https://github.com/Corvus-Malus/AdGuardHome/raw/main/Installer/install_adguardhome.sh
+curl -L -O https://github.com/Corvus-Malus/AdGuardHome/raw/main/Installer/install_adguardhome.sh
 ```
 
 3. Сделайте скрипт исполняемым:
@@ -234,6 +234,18 @@ system configuration save
       <img src="https://github.com/Corvus-Malus/XKeen-docs/raw/main/images/AdGuardHome/Light/unistall.png">
     </picture>
 </p>
+
+<br>
+
+Включите встроенный DNS-сервер прошивки Keenetic. [Подключитесь к CLI](http://192.168.1.1/webcli/parse) (не путайте с SSH-сервером из Entware, который работает на порту 222): http://192.168.1.1/webcli/parse
+
+```bash
+no opkg dns-override
+```
+
+```bash
+system configuration save
+```
 
 ---
 
