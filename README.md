@@ -19,15 +19,6 @@ curl -L -O https://github.com/Corvus-Malus/AdGuardHome/raw/main/Installer/instal
 chmod +x install_adguardhome.sh
 ```
 
-<p align="center">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://github.com/Corvus-Malus/XKeen-docs/raw/main/images/AdGuardHome/Dark/install-1.png">
-      <img src="https://github.com/Corvus-Malus/XKeen-docs/raw/main/images/AdGuardHome/Light/install-1.png">
-    </picture>
-</p>
-
-<br>
-
 5. Запустите скрипт для установки AdGuard Home:
 
 ```bash
