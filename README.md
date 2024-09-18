@@ -7,7 +7,7 @@
 
 ## Установка AdGuard Home
 1. Подключитесь к вашему устройству с **Entware** по SSH под пользователем **root**.
-2. Выполните команду:
+2. Выполните команду, чтобы скачать скрипт установки:
 
 ```bash
 curl -L -O https://github.com/Corvus-Malus/AdGuardHome/raw/main/Installer/install_adguardhome.sh
