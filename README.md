@@ -203,6 +203,10 @@ system configuration save
     </picture>
 </p>
 
+<br>
+
+Получение доступа к ИИ-сервисам (ChatGPT, Microsoft Copilot, Google Gemini) из России
+
 <p align="center">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="https://github.com/Corvus-Malus/XKeen-docs/raw/main/images/AdGuardHome/Dark/DNS-11.png">
