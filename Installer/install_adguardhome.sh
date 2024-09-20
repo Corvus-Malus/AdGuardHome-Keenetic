@@ -42,15 +42,15 @@ install() {
       URL="https://github.com/AdguardTeam/AdGuardHome/releases/latest/download/AdGuardHome_linux_amd64.tar.gz"
       ;;
     *)
-      echo -e "${RED}Неподдерживаемая архитектура: $CPU_ARCH${NC}" && exit 1
+      printf "${RED}Неподдерживаемая архитектура: $CPU_ARCH${NC}\n" && exit 1
       ;;
   esac
 
   # Скачивание и установка AdGuard Home
-  echo -e "${GREEN}Скачивание и установка AdGuard Home...${NC}"
+  printf "${GREEN}Скачивание и установка AdGuard Home...${NC}\n"
   curl -L -o /opt/etc/AdGuardHome.tar.gz $URL
   if [ $? -ne 0 ]; then
-    echo -e "${RED}Ошибка при скачивании AdGuard Home.${NC}" && exit 1
+    printf "${RED}Ошибка при скачивании AdGuard Home.${NC}\n" && exit 1
   fi
 
   cd /opt/etc && \
@@ -60,41 +60,41 @@ install() {
   chmod 755 AdGuardHome && \
   ./AdGuardHome &
   if [ $? -ne 0 ]; then
-    echo -e "${RED}Ошибка при запуске AdGuard Home.${NC}" && exit 1
+    printf "${RED}Ошибка при запуске AdGuard Home.${NC}\n" && exit 1
   fi
 
   # Скачивание и установка файла автозагрузки
-  echo -e "${GREEN}Скачивание и установка файла автозагрузки...${NC}"
+  printf "${GREEN}Скачивание и установка файла автозагрузки...${NC}\n"
   curl -L -o /opt/etc/init.d/S99adguardhome https://github.com/Corvus-Malus/AdGuardHome/raw/main/Installer/S99adguardhome
   if [ $? -ne 0 ]; then
-    echo -е "${RED}Ошибка при скачивании файла автозагрузки.${NC}" && exit 1
+    printf "${RED}Ошибка при скачивании файла автозагрузки.${NC}\n" && exit 1
   fi
 
   chmod +x /opt/etc/init.d/S99adguardhome
 
-  echo -е "${GREEN}Установка завершена.${NC}"
+  printf "${GREEN}Установка завершена.${NC}\n"
 }
 
 uninstall() {
-  echo -е "${GREEN}Удаление AdGuard Home и связанных файлов...${NC}"
+  printf "${GREEN}Удаление AdGuard Home и связанных файлов...${NC}\n"
 
   # Удаление установленных файлов
   if [ -d "$INSTALL_DIR" ]; then
     rm -rf "$INSTALL_DIR"
-    echo -е "${GREEN}Удален $INSTALL_DIR${NC}"
+    printf "${GREEN}Удален $INSTALL_DIR${NC}\n"
   else
-    echo -е "${RED}AdGuard Home не найден в $INSTALL_DIR${NC}"
+    printf "${RED}AdGuard Home не найден в $INSTALL_DIR${NC}\n"
   fi
 
   # Удаление файла автозагрузки
   if [ -f "/opt/etc/init.d/S99adguardhome" ]; then
     rm /opt/etc/init.d/S99adguardhome
-    echo -е "${GREEN}Удален /opt/etc/init.d/S99adguardhome${NC}"
+    printf "${GREEN}Удален /opt/etc/init.d/S99adguardhome${NC}\n"
   else
-    echo -е "${RED}Файл автозагрузки не найден${NC}"
+    printf "${RED}Файл автозагрузки не найден${NC}\n"
   fi
 
-  echo -е "${GREEN}Удаление завершено.${NC}"
+  printf "${GREEN}Удаление завершено.${NC}\n"
 }
 
 # Проверка аргументов командной строки
@@ -103,6 +103,6 @@ if [ "$1" = "install" ]; then
 elif [ "$1" = "uninstall" ]; then
   uninstall
 else
-  echo -е "${RED}Использование: $0 {install|uninstall}${NC}"
+  printf "${RED}Использование: $0 {install|uninstall}${NC}\n"
   exit 1
 fi
