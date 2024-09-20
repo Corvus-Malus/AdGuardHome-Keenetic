@@ -8,75 +8,113 @@ NC='\033[0m' # Без цвета
 INSTALL_DIR="/opt/etc/AdGuardHome"
 ARCH=$(uname -m)
 
-# Если доступна команда lscpu, используем её для более детального определения архитектуры
-if command -v lscpu > /dev/null; then
-  CPU_ARCH=$(lscpu | grep Architecture | awk '{print $2}')
-else
-  CPU_ARCH=$ARCH
-fi
-
-install() {
-  case $CPU_ARCH in
-    "aarch64")
-      URL="https://github.com/AdguardTeam/AdGuardHome/releases/latest/download/AdGuardHome_linux_arm64.tar.gz"
+# Функция определения архитектуры
+get_cpu_arch() {
+  case "$ARCH" in
+    "aarch64" | "arm64")
+      echo "arm64"
       ;;
-    "armv5")
-      URL="https://github.com/AdguardTeam/AdGuardHome/releases/latest/download/AdGuardHome_linux_armv5.tar.gz"
+    "armv5" | "armv5l")
+      echo "armv5"
       ;;
-    "armv6")
-      URL="https://github.com/AdguardTeam/AdGuardHome/releases/latest/download/AdGuardHome_linux_armv6.tar.gz"
+    "armv6" | "armv6l")
+      echo "armv6"
       ;;
-    "armv7")
-      URL="https://github.com/AdguardTeam/AdGuardHome/releases/latest/download/AdGuardHome_linux_armv7.tar.gz"
+    "armv7" | "armv7l")
+      echo "armv7"
       ;;
-    "mipsle" | "mipsel")
-      URL="https://github.com/AdguardTeam/AdGuardHome/releases/latest/download/AdGuardHome_linux_mipsle_softfloat.tar.gz"
+    "x86_64" | "amd64")
+      echo "amd64"
       ;;
-    "mips64le")
-      URL="https://github.com/AdguardTeam/AdGuardHome/releases/latest/download/AdGuardHome_linux_mips64le_softfloat.tar.gz"
+    "i386" | "i486" | "i686")
+      echo "386"
       ;;
-    "mips")
-      URL="https://github.com/AdguardTeam/AdGuardHome/releases/latest/download/AdGuardHome_linux_mips_softfloat.tar.gz"
-      ;;
-    "amd64" | "x86_64")
-      URL="https://github.com/AdguardTeam/AdGuardHome/releases/latest/download/AdGuardHome_linux_amd64.tar.gz"
+    "mips" | "mipsle" | "mips64" | "mips64le")
+      if is_little_endian; then
+        echo "${ARCH}le"
+      else
+        echo "${ARCH}"
+      fi
       ;;
     *)
-      printf "${RED}Неподдерживаемая архитектура: $CPU_ARCH${NC}\n" && exit 1
+      printf "${RED}Неподдерживаемая архитектура: $ARCH${NC}\n" && exit 1
       ;;
   esac
+}
+
+# Функция проверки порядка байтов
+is_little_endian() {
+  printf 'I' | hexdump -o | awk '{ print substr($2, 6, 1); exit; }' | grep -q '1'
+}
+
+# Функция для скачивания файла
+download_file() {
+  local url="$1"
+  local output="$2"
+
+  if command -v curl >/dev/null 2>&1; then
+    curl -L -o "$output" "$url"
+  elif command -v wget >/dev/null 2>&1; then
+    wget -O "$output" "$url"
+  else
+    printf "${RED}Ошибка: не найден curl или wget.${NC}\n" && exit 1
+  fi
+
+  # Проверка успешности загрузки
+  if [ $? -ne 0 ]; then
+    printf "${RED}Ошибка при скачивании файла: $url${NC}\n" && exit 1
+  fi
+}
+
+install() {
+  CPU_ARCH=$(get_cpu_arch)
+
+  # Определение URL для скачивания
+  if [[ "$CPU_ARCH" == *"le"* ]]; then
+    URL="https://github.com/AdguardTeam/AdGuardHome/releases/latest/download/AdGuardHome_linux_${CPU_ARCH}_softfloat.tar.gz"
+  else
+    URL="https://github.com/AdguardTeam/AdGuardHome/releases/latest/download/AdGuardHome_linux_${CPU_ARCH}.tar.gz"
+  fi
 
   # Скачивание и установка AdGuard Home
   printf "${GREEN}Скачивание и установка AdGuard Home...${NC}\n"
-  curl -L -o /opt/etc/AdGuardHome.tar.gz $URL
-  if [ $? -ne 0 ]; then
-    printf "${RED}Ошибка при скачивании AdGuard Home.${NC}\n" && exit 1
-  fi
-
+  download_file "$URL" "/opt/etc/AdGuardHome.tar.gz"
+  
+  # Распаковка и установка
   cd /opt/etc && \
   tar -xzf AdGuardHome.tar.gz && \
   rm AdGuardHome.tar.gz && \
-  cd $INSTALL_DIR && \
+  cd "$INSTALL_DIR" && \
   chmod 755 AdGuardHome && \
   ./AdGuardHome &
+
   if [ $? -ne 0 ]; then
     printf "${RED}Ошибка при запуске AdGuard Home.${NC}\n" && exit 1
   fi
 
   # Скачивание и установка файла автозагрузки
   printf "${GREEN}Скачивание и установка файла автозагрузки...${NC}\n"
-  curl -L -o /opt/etc/init.d/S99adguardhome https://github.com/Corvus-Malus/AdGuardHome/raw/main/Installer/S99adguardhome
-  if [ $? -ne 0 ]; then
-    printf "${RED}Ошибка при скачивании файла автозагрузки.${NC}\n" && exit 1
-  fi
+  download_file "https://github.com/Corvus-Malus/AdGuardHome/raw/main/Installer/S99adguardhome" "/opt/etc/init.d/S99adguardhome"
 
   chmod +x /opt/etc/init.d/S99adguardhome
+
+  # Задержка перед выводом сообщения об успешной установке
+  sleep 3
 
   printf "${GREEN}Установка завершена.${NC}\n"
 }
 
 uninstall() {
   printf "${GREEN}Удаление AdGuard Home и связанных файлов...${NC}\n"
+
+  # Остановка службы
+  if [ -f "/opt/etc/init.d/S99adguardhome" ]; then
+    printf "${GREEN}Остановка AdGuard Home...${NC}\n"
+    /opt/etc/init.d/S99adguardhome stop
+    wait # Ждем завершения команды
+  else
+    printf "${RED}Файл автозагрузки не найден, пропуск остановки.${NC}\n"
+  fi
 
   # Удаление установленных файлов
   if [ -d "$INSTALL_DIR" ]; then
