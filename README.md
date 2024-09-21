@@ -10,7 +10,7 @@
 2. Выполните команду, чтобы скачать скрипт установки:
 
 ```bash
-curl -L -O https://github.com/Corvus-Malus/AdGuardHome/raw/main/Installer/install_adguardhome.sh
+curl -s -S -L -O https://github.com/Corvus-Malus/AdGuardHome/raw/main/Installer/install_adguardhome.sh
 ```
 
 3. Сделайте скрипт исполняемым:
