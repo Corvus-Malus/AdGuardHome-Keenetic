@@ -236,11 +236,15 @@ system configuration save
 
 ## Удаление AdGuard Home
 
-Для удаления AdGuard Home выполните:
+* **Для удаления AdGuard Home установленного из официального источника:**
+
+1. Остановите AdGuard Home:
 
 ```bash
 /opt/etc/init.d/S99adguardhome stop
 ```
+
+2. Выполните команду для удаления:
 
 ```bash
 ./install_adguardhome.sh uninstall
@@ -255,12 +259,35 @@ system configuration save
 
 <br>
 
-Включите встроенный DNS-сервер прошивки Keenetic. [Подключитесь к CLI](http://192.168.1.1/webcli/parse) (не путайте с SSH-сервером из Entware, который работает на порту 222): http://192.168.1.1/webcli/parse
+* **Для удаления AdGuard Home установленного из репозитория Entware**
+
+1. Остановите AdGuard Home:
+
+```bash
+/opt/etc/init.d/S99adguardhome stop
+```
+
+2. Выполните команду для удаления:
+
+```bash
+opkg remove adguardhome-go
+```
+
+<br>
+
+**Включение встроенного DNS-сервера прошивки Keenetic.**
+1. Подключитесь к CLI (не путайте с SSH-сервером из Entware, который работает на порту 222) по адресу:
+
+[http://192.168.1.1/webcli/parse](http://192.168.1.1/webcli/parse)
+
+2. Включите встроенный DNS-сервер, отключив DNS-замещение:
 
 ```bash
 no opkg dns-override
 ```
 
+3. Сохраните изменения:
+ 
 ```bash
 system configuration save
 ```
